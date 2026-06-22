@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Pour Balkissa · Reine de Saba</title>
+    <title>HBD Balkissa · My everything 💝</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -860,10 +860,14 @@
         );
 
         const inner = svgEl("g");
-        inner.setAttribute("transform", `translate(${bx},${by}) rotate(${angle})`);
+        inner.setAttribute(
+          "transform",
+          `translate(${bx},${by}) rotate(${angle})`,
+        );
 
         const N = 9; // teeth per side
-        const prof = (t) => Math.sin(Math.PI * Math.pow(t, 0.72)) * (1 - 0.1 * t);
+        const prof = (t) =>
+          Math.sin(Math.PI * Math.pow(t, 0.72)) * (1 - 0.1 * t);
 
         // serrated outline: up the right edge, down the left edge
         let d = "M 0,0 ";
@@ -926,7 +930,10 @@
         gloss.setAttribute("rx", W * 0.3);
         gloss.setAttribute("ry", L * 0.26);
         gloss.setAttribute("fill", "rgba(190, 235, 170, 0.18)");
-        gloss.setAttribute("transform", `rotate(-12 ${gx.toFixed(1)} ${gy.toFixed(1)})`);
+        gloss.setAttribute(
+          "transform",
+          `rotate(-12 ${gx.toFixed(1)} ${gy.toFixed(1)})`,
+        );
         inner.appendChild(gloss);
 
         g.appendChild(inner);
