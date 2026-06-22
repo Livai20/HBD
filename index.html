@@ -534,6 +534,57 @@
         opacity: 0.7;
       }
 
+      /* ── Final love message ── */
+      .love {
+        font-family: "Cormorant Garamond", serif;
+        font-style: italic;
+        font-size: clamp(15px, 2.7vw, 20px);
+        color: rgba(110, 39, 56, 0.92);
+        line-height: 1.6;
+        max-width: 600px;
+        margin: 24px auto 0;
+        animation-delay: 11s;
+      }
+      .love-final {
+        display: block;
+        margin-top: 14px;
+        font-family: "Cinzel", serif;
+        font-style: normal;
+        font-weight: 600;
+        font-size: clamp(18px, 3.6vw, 28px);
+        letter-spacing: 2px;
+        background: linear-gradient(
+          180deg,
+          #d65b76 0%,
+          #b32a4c 55%,
+          #8a1838 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .love-final .beat {
+        display: inline-block;
+        -webkit-text-fill-color: #d6336c;
+        color: #d6336c;
+        animation: beat 1.25s ease-in-out infinite;
+      }
+      @keyframes beat {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        15% {
+          transform: scale(1.28);
+        }
+        30% {
+          transform: scale(1);
+        }
+        45% {
+          transform: scale(1.16);
+        }
+      }
+
       /* ── Typewriter caret ── */
       .caret::after {
         content: "|";
@@ -770,6 +821,10 @@
         >
       </div>
       <div class="message-line countdown" id="countdown"></div>
+      <div class="message-line love" id="love">
+        <span id="loveText"></span>
+        <span class="love-final">Je t'aime <span class="beat">❤</span></span>
+      </div>
     </div>
 
     <div id="intro">
@@ -803,12 +858,16 @@
         signoff: "In sha Allah, en Décembre💍. - Your biggest fan❤",
         // 📅 Date de vos retrouvailles (modifie-la !) — format AAAA-MM-JJ
         reunionDate: "2026-12-01",
+        // 💌 Le mot d'amour qui apparaît tout à la fin (modifie-le librement)
+        loveMessage:
+          "Balkissa, mon âme, ma reine. Qu'Allah me garde à tes côtés chaque jour qu'Il nous offrira. Tu es ma paix, ma plus douce prière, et la plus belle chose qui me soit arrivée. Loin des yeux, jamais du cœur — je compte les jours qui me séparent de toi.",
       };
 
       document.getElementById("greeting").textContent = CONFIG.greeting;
       document.getElementById("name").textContent = CONFIG.name;
       document.getElementById("title").innerHTML =
         `<span>—</span>${CONFIG.title}<span>—</span>`;
+      document.getElementById("loveText").textContent = CONFIG.loveMessage;
       // Tab title stays subtle ("Pour toi…") until the surprise is opened.
       // It is revealed in startShow(), after the first tap.
       // The personal line is typed out on start (see typewriter below).
@@ -1466,6 +1525,13 @@
           updateCountdown();
           setInterval(updateCountdown, 60000);
         }, 9300),
+      );
+
+      // ── A tender flurry of hearts as the final love message appears ──
+      runOnStart(() =>
+        setTimeout(() => {
+          for (let i = 0; i < 36; i++) setTimeout(spawnFloat, i * 50);
+        }, 11000),
       );
 
       // ════════════════════════════════════════════════════════════
