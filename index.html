@@ -171,11 +171,11 @@
       }
       .stem {
         stroke: url(#stemGrad);
-        stroke-width: 7;
+        stroke-width: 8.5;
       }
       .stem-shadow {
-        stroke: rgba(0, 0, 0, 0.5);
-        stroke-width: 14;
+        stroke: rgba(40, 70, 30, 0.45);
+        stroke-width: 16;
         filter: blur(4px);
       }
 
@@ -258,10 +258,10 @@
         z-index: -1;
         pointer-events: none;
         background: radial-gradient(
-          ellipse 56% 52% at 50% 58%,
-          rgba(253, 246, 242, 0.95) 0%,
-          rgba(253, 246, 242, 0.86) 44%,
-          rgba(253, 246, 242, 0) 76%
+          ellipse 58% 54% at 50% 58%,
+          rgba(253, 246, 242, 0.5) 0%,
+          rgba(253, 246, 242, 0.3) 46%,
+          rgba(253, 246, 242, 0) 74%
         );
       }
 
@@ -269,9 +269,13 @@
         opacity: 0;
         transform: translateY(20px);
         animation: textRise 1.6s cubic-bezier(0.2, 0.6, 0.3, 1) forwards;
+        /* tight white halo: keeps text crisp over the green stem
+           while letting the stem stay visible through a lighter veil */
         text-shadow:
-          0 1px 2px rgba(255, 250, 246, 0.9),
-          0 0 14px rgba(255, 248, 242, 0.7);
+          0 0 3px rgba(255, 250, 246, 0.95),
+          0 1px 1px rgba(255, 250, 246, 0.95),
+          0 0 8px rgba(255, 248, 242, 0.8),
+          0 0 16px rgba(255, 248, 242, 0.5);
       }
 
       .greeting {
@@ -558,43 +562,80 @@
         opacity: 0.7;
       }
 
-      /* ── "Read my letter" button (appears at the very end) ── */
-      .letter-btn {
+      /* ── Sealed envelope that opens the letter (appears at the end) ── */
+      .envelope {
         pointer-events: auto;
         display: inline-flex;
+        flex-direction: column;
         align-items: center;
-        gap: 8px;
-        margin-top: 24px;
+        gap: 9px;
+        margin-top: 22px;
+        padding: 6px 10px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        opacity: 0;
+        transition: opacity 1s ease;
+      }
+      .envelope.show {
+        opacity: 1;
+      }
+      .env-svg {
+        width: clamp(76px, 16vw, 106px);
+        height: auto;
+        overflow: visible;
+        filter: drop-shadow(0 10px 16px rgba(120, 50, 40, 0.28));
+        animation: envFloat 2.6s ease-in-out infinite;
+      }
+      @keyframes envFloat {
+        0%,
+        100% {
+          transform: translateY(0) scale(1);
+        }
+        50% {
+          transform: translateY(-5px) scale(1.03);
+        }
+      }
+      .env-flap,
+      .env-seal {
+        transition:
+          transform 0.5s cubic-bezier(0.3, 0.7, 0.3, 1),
+          opacity 0.45s ease;
+      }
+      .env-flap {
+        transform-box: fill-box;
+        transform-origin: 50% 0%;
+      }
+      .env-seal {
+        transform-box: fill-box;
+        transform-origin: center;
+      }
+      .env-label {
         font-family: "Cormorant Garamond", serif;
         font-style: italic;
-        font-size: clamp(15px, 2.7vw, 20px);
-        letter-spacing: 0.5px;
+        font-size: clamp(14px, 2.5vw, 18px);
+        letter-spacing: 1px;
         color: #8a1838;
-        background: rgba(255, 255, 255, 0.55);
-        border: 1px solid rgba(176, 58, 91, 0.4);
-        border-radius: 999px;
-        padding: 11px 28px;
-        cursor: pointer;
-        box-shadow: 0 8px 22px rgba(176, 58, 91, 0.18);
-        -webkit-backdrop-filter: blur(2px);
-        backdrop-filter: blur(2px);
+        text-shadow: 0 1px 2px rgba(255, 250, 246, 0.9);
+      }
+      .envelope:hover .env-svg {
+        filter: drop-shadow(0 14px 20px rgba(120, 50, 40, 0.4))
+          brightness(1.04);
+      }
+      .envelope:hover .env-label {
+        color: #b3243f;
+      }
+      /* Opening: the flap lifts, the seal pops, the float pauses */
+      .envelope.opening .env-svg {
+        animation-play-state: paused;
+      }
+      .envelope.opening .env-flap {
+        transform: scaleY(-1) translateY(-3px);
         opacity: 0;
-        animation: btnFade 1.2s ease forwards;
-        animation-delay: 10.2s;
-        transition:
-          background 0.2s,
-          transform 0.2s,
-          box-shadow 0.2s;
       }
-      .letter-btn:hover {
-        background: rgba(255, 255, 255, 0.85);
-        transform: translateY(-2px);
-        box-shadow: 0 12px 28px rgba(176, 58, 91, 0.28);
-      }
-      @keyframes btnFade {
-        to {
-          opacity: 1;
-        }
+      .envelope.opening .env-seal {
+        transform: scale(1.6);
+        opacity: 0;
       }
 
       /* ── Handwritten love letter (modal) ── */
@@ -950,8 +991,80 @@
         >
       </div>
       <div class="message-line countdown" id="countdown"></div>
-      <button class="letter-btn" id="letterBtn" type="button">
-        💌 Lis ma lettre
+      <button
+        class="envelope"
+        id="letterBtn"
+        type="button"
+        aria-label="Ouvrir la lettre"
+      >
+        <svg
+          class="env-svg"
+          viewBox="0 0 120 90"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true"
+        >
+          <defs>
+            <linearGradient id="envPaper" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#fff8ee" />
+              <stop offset="1" stop-color="#f1dec3" />
+            </linearGradient>
+            <linearGradient id="envFlapGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#fbeed8" />
+              <stop offset="1" stop-color="#ecd5b6" />
+            </linearGradient>
+            <radialGradient id="waxGrad" cx="38%" cy="32%" r="78%">
+              <stop offset="0" stop-color="#e0556b" />
+              <stop offset="0.5" stop-color="#b3243f" />
+              <stop offset="1" stop-color="#7e0f25" />
+            </radialGradient>
+          </defs>
+
+          <!-- Envelope body -->
+          <rect
+            x="8"
+            y="26"
+            width="104"
+            height="56"
+            rx="6"
+            fill="url(#envPaper)"
+            stroke="#d8bd99"
+            stroke-width="1.2"
+          />
+          <!-- Front pocket fold lines -->
+          <path
+            d="M8,80 L60,54 L112,80"
+            fill="none"
+            stroke="#d8bd99"
+            stroke-width="1.2"
+            stroke-linejoin="round"
+          />
+          <!-- Closed top flap -->
+          <path
+            class="env-flap"
+            d="M8,26 L60,60 L112,26 Z"
+            fill="url(#envFlapGrad)"
+            stroke="#d8bd99"
+            stroke-width="1.2"
+            stroke-linejoin="round"
+          />
+          <!-- Wax seal with a heart -->
+          <g class="env-seal">
+            <circle
+              cx="60"
+              cy="44"
+              r="13"
+              fill="url(#waxGrad)"
+              stroke="#5e0f1c"
+              stroke-width="0.8"
+            />
+            <path
+              d="M60,49.5 C57,46 53,44 53,40.4 C53,38.4 54.6,37 56.4,37 C57.9,37 59,37.9 60,39.3 C61,37.9 62.1,37 63.6,37 C65.4,37 67,38.4 67,40.4 C67,44 63,46 60,49.5 Z"
+              fill="#ffd9e0"
+              opacity="0.92"
+            />
+          </g>
+        </svg>
+        <span class="env-label">Lis ma lettre</span>
       </button>
     </div>
 
@@ -1701,8 +1814,14 @@
       // ── The handwritten love letter: opens as an isolated modal ──
       const letterEl = document.getElementById("letter");
       const letterBody = document.getElementById("letterBody");
+      const letterBtn = document.getElementById("letterBtn");
 
-      function openLetter() {
+      // The sealed envelope appears at the very end, then invites the tap
+      runOnStart(() =>
+        setTimeout(() => letterBtn.classList.add("show"), 10200),
+      );
+
+      function revealLetterModal() {
         letterEl.classList.add("open");
         letterEl.setAttribute("aria-hidden", "false");
         letterEl.querySelector(".letter-card").scrollTop = 0;
@@ -1718,14 +1837,21 @@
         for (let i = 0; i < 30; i++) setTimeout(spawnFloat, i * 55);
       }
 
+      function openLetter() {
+        if (letterEl.classList.contains("open")) return;
+        // Break the wax seal & lift the flap, then unfold the letter
+        letterBtn.classList.add("opening");
+        setTimeout(revealLetterModal, 480);
+      }
+
       function closeLetter() {
         letterEl.classList.remove("open");
         letterEl.setAttribute("aria-hidden", "true");
+        // Re-seal the envelope so it can be opened again
+        letterBtn.classList.remove("opening");
       }
 
-      document
-        .getElementById("letterBtn")
-        .addEventListener("click", openLetter);
+      letterBtn.addEventListener("click", openLetter);
       document
         .getElementById("letterClose")
         .addEventListener("click", closeLetter);
