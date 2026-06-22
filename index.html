@@ -611,8 +611,7 @@
         color: #8a1838;
       }
       .envelope:hover .env-svg {
-        filter: drop-shadow(0 14px 20px rgba(120, 50, 40, 0.4))
-          brightness(1.04);
+        filter: drop-shadow(0 14px 20px rgba(120, 50, 40, 0.4)) brightness(1.04);
       }
       .envelope:hover .env-label {
         color: #b3243f;
@@ -724,20 +723,22 @@
       }
       .l-photo {
         margin: 0 auto 24px;
-        width: min(62%, 220px);
+        /* wide enough for a landscape photo, capped for portraits */
+        width: min(92%, 360px);
         text-align: center;
       }
       .l-photo img {
         width: 100%;
-        aspect-ratio: 4 / 5;
-        object-fit: cover;
+        height: auto; /* respect the photo's real proportions — no crop */
+        max-height: 56vh;
+        object-fit: contain;
         display: block;
         border-radius: 10px;
         border: 5px solid #fffaf2;
         box-shadow:
           0 12px 26px rgba(80, 30, 45, 0.32),
           0 0 0 1px rgba(196, 150, 110, 0.55);
-        transform: rotate(-2deg);
+        transform: rotate(-1.5deg);
       }
       .l-photo figcaption {
         margin-top: 10px;
@@ -1138,9 +1139,9 @@
         //    la salutation, autant de paragraphes que tu veux, et la signature.
         letter: {
           // 🖼️ Photo en haut de la lettre : dépose ton image dans le dossier
-          //    HBD/ et écris son nom ici (ex. "balkissa.jpg"). Mets "" pour
+          //    HBD/ et écris son nom ici (ex. "us.jpg"). Mets "" pour
           //    aucune photo. Si le fichier manque, le cadre se cache tout seul.
-          photo: "balkissa.jpg",
+          photo: "us.jpg",
           photoCaption: "",
           salutation: "Ma Balkissa,",
           paragraphs: [
