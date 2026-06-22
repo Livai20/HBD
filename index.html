@@ -240,14 +240,38 @@
         right: 0;
         text-align: center;
         z-index: 4;
+        isolation: isolate;
         pointer-events: none;
         padding: 0 20px;
+      }
+
+      /* Soft cream veil behind the text so it stays readable over the
+         rose stem and leaves (boosts contrast without darkening the page) */
+      .message::before {
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: -12%;
+        transform: translateX(-50%);
+        width: 150%;
+        height: 138%;
+        z-index: -1;
+        pointer-events: none;
+        background: radial-gradient(
+          ellipse 56% 52% at 50% 58%,
+          rgba(253, 246, 242, 0.95) 0%,
+          rgba(253, 246, 242, 0.86) 44%,
+          rgba(253, 246, 242, 0) 76%
+        );
       }
 
       .message-line {
         opacity: 0;
         transform: translateY(20px);
         animation: textRise 1.6s cubic-bezier(0.2, 0.6, 0.3, 1) forwards;
+        text-shadow:
+          0 1px 2px rgba(255, 250, 246, 0.9),
+          0 0 14px rgba(255, 248, 242, 0.7);
       }
 
       .greeting {
@@ -302,7 +326,7 @@
         font-size: clamp(17px, 3.2vw, 24px);
         color: #7a3142;
         letter-spacing: clamp(2px, 0.5vw, 4px);
-        margin-bottom: 22px;
+        margin-bottom: 16px;
         animation-delay: 7.8s;
       }
 
@@ -326,7 +350,7 @@
       .personal .signoff {
         display: block;
         margin-top: 8px;
-        color: rgba(110, 39, 56, 0.6);
+        color: rgba(110, 39, 56, 0.82);
         font-size: 0.9em;
       }
 
@@ -518,9 +542,9 @@
         font-family: "Cormorant Garamond", serif;
         font-style: italic;
         font-size: clamp(13px, 2.3vw, 17px);
-        color: rgba(110, 39, 56, 0.85);
+        color: rgba(110, 39, 56, 0.95);
         letter-spacing: 0.5px;
-        margin-top: 14px;
+        margin-top: 12px;
         animation-delay: 9.3s;
       }
       .countdown b {
@@ -600,6 +624,9 @@
         width: min(92vw, 600px);
         max-height: 86vh;
         overflow-y: auto;
+        /* keep scrolling, but hide the scrollbar */
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* old Edge/IE */
         padding: clamp(30px, 6vw, 56px) clamp(24px, 6vw, 56px);
         border-radius: 6px;
         color: #5b2b33;
@@ -616,6 +643,12 @@
         border: 1px solid rgba(196, 150, 110, 0.35);
         transform: translateY(26px) scale(0.97);
         transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.3, 1);
+      }
+      /* hide the scrollbar on WebKit (Safari, iOS, Chrome) */
+      .letter-card::-webkit-scrollbar {
+        width: 0;
+        height: 0;
+        display: none;
       }
       .letter-overlay.open .letter-card {
         transform: translateY(0) scale(1);
@@ -787,7 +820,7 @@
               <stop offset="0.55" stop-color="rgba(18, 0, 5, 0)" />
             </linearGradient>
 
-            <!-- Dew drop — glassy bead with a bright Fresnel rim -->
+            <!-- Dew drop - glassy bead with a bright Fresnel rim -->
             <radialGradient id="dew" cx="38%" cy="30%" r="72%">
               <stop offset="0" stop-color="rgba(255, 255, 255, 0.55)" />
               <stop offset="0.3" stop-color="rgba(255, 240, 242, 0.1)" />
@@ -844,7 +877,7 @@
           <!-- Thorns along the stem (built via JS) -->
           <g id="thorns"></g>
 
-          <!-- Leaves (serrated, veined — built via JS) -->
+          <!-- Leaves (serrated, veined - built via JS) -->
           <g id="leaves"></g>
 
           <!-- Sepals behind rose -->
@@ -908,7 +941,7 @@
       </div>
       <h1 class="message-line name" id="name">BALKISSA</h1>
       <div class="message-line title-line" id="title">
-        <span>—</span>Reine de Saba<span>—</span>
+        <span>-</span>Reine de Saba<span>-</span>
       </div>
       <div class="message-line personal" id="personal">
         Comme Bilqîs en son temps, tu règnes sur mon cœur.
@@ -971,29 +1004,30 @@
         title: "My everything 💝",
         personalLine: "Comme Bilqîs en son temps, tu règnes sur mon cœur.",
         signoff: "In sha Allah, en Décembre💍. - Your biggest fan❤",
-        // 📅 Date de vos retrouvailles (modifie-la !) — format AAAA-MM-JJ
+        // 📅 Date de vos retrouvailles (modifie-la !) - format AAAA-MM-JJ
         reunionDate: "2026-12-01",
         // 💌 La lettre d'amour (s'ouvre en modale). Modifie librement :
         //    la salutation, autant de paragraphes que tu veux, et la signature.
         letter: {
           salutation: "Ma Balkissa,",
           paragraphs: [
-            "Aujourd'hui le monde célèbre le jour où tu es née ; moi, je célèbre le jour où Allah a décidé que mon chemin croiserait le tien. De toutes Ses grâces, tu es la plus belle.",
+            "Aujourd'hui c'est ton jour, mon amour 💖.",
             "Je voudrais avoir les mots des poètes pour te dire ce que tu représentes. Mais aucun mot n'est assez grand : tu es ma paix quand tout s'agite, mon sourire quand le jour est gris, et la plus douce de mes prières.",
             "Loin de toi, je compte les heures ; et chaque heure me rapproche du jour où je pourrai enfin prendre ta main devant Lui et t'appeler mienne, in sha Allah.",
-            "Tu n'es pas seulement la femme que j'aime — tu es mon everything, ma reine, mon avenir, et la plus belle des bénédictions.",
+            "Tu n'es pas seulement la femme que j'aime - tu es my everything, ma reine, mon avenir, et la plus belle des bénédictions.",
             "Alors aujourd'hui, je ne te souhaite pas seulement un joyeux anniversaire. Je te souhaite une vie entière à mes côtés, faite de rires, de douaa exaucées, et d'un amour qui ne s'éteint jamais.",
             "Joyeux anniversaire, mon amour. Qu'Allah te garde, te comble, et t'offre tout ce que ton cœur désire.",
-            "Je t'aime — hier, aujourd'hui, et chaque jour qu'Il nous accordera.",
+            "Nas Teshbehlena, je veux juste que tu saches une chose : depuis que tu es entrée dans ma vie, chaque jour est devenu un peu plus doux, un peu plus lumineux, un peu plus à sa place.",
+            "Je t'aime - hier, aujourd'hui, et chaque jour qu'Il nous accordera.",
           ],
           signature: "Pour toujours, ton Abdourahamane",
         },
       };
-      
+
       document.getElementById("greeting").textContent = CONFIG.greeting;
       document.getElementById("name").textContent = CONFIG.name;
       document.getElementById("title").innerHTML =
-        `<span>—</span>${CONFIG.title}<span>—</span>`;
+        `<span>-</span>${CONFIG.title}<span>-</span>`;
       // Build the handwritten letter from CONFIG
       (function buildLetter() {
         const L = CONFIG.letter;
@@ -1034,14 +1068,14 @@
         const lw = w * (1 + asym * 0.09);
         const rw = w * (1 - asym * 0.09);
         if (pointed) {
-          // Furled inner petal — narrow, gently pointed, deeply cupped
+          // Furled inner petal - narrow, gently pointed, deeply cupped
           return `M 0,0
       C ${-lw * 0.4},${-h * 0.04} ${-lw * 0.96},${-h * 0.4} ${-lw * 0.46},${-h * 0.8}
       C ${-lw * 0.3},${-h * 0.95} ${-lw * 0.08},${-h * 1.0} 0,${-h}
       C ${rw * 0.08},${-h * 1.0} ${rw * 0.3},${-h * 0.95} ${rw * 0.46},${-h * 0.8}
       C ${rw * 0.96},${-h * 0.4} ${rw * 0.4},${-h * 0.04} 0,0 Z`;
         }
-        // Broad outer petal — rounded, with a soft heart-notch at the crown
+        // Broad outer petal - rounded, with a soft heart-notch at the crown
         return `M 0,0
     C ${-lw * 0.52},${-h * 0.05} ${-lw * 1.04},${-h * 0.34} ${-lw * 0.74},${-h * 0.66}
     C ${-lw * 0.62},${-h * 0.84} ${-lw * 0.4},${-h * 0.99} ${-lw * 0.2},${-h * 0.96}
@@ -1092,7 +1126,7 @@
         path.setAttribute("opacity", opacity);
         local.appendChild(path);
 
-        // Throat shadow — deepens the cupped base (same silhouette, dark fades to clear)
+        // Throat shadow - deepens the cupped base (same silhouette, dark fades to clear)
         const shade = svgEl("path");
         shade.setAttribute("d", d);
         shade.setAttribute("fill", "url(#throat)");
@@ -1160,7 +1194,7 @@
         );
       }
 
-      // Dew drop — a glassy bead of water for that fresh, magnificent touch
+      // Dew drop - a glassy bead of water for that fresh, magnificent touch
       function dewDrop(x, y, r, delay = 0) {
         const g = svgEl("g");
         g.style.opacity = "0";
@@ -1208,7 +1242,7 @@
         });
       }
 
-      // ── Thorns — small curved spikes along the stem ──────────────
+      // ── Thorns - small curved spikes along the stem ──────────────
       const thorns = document.getElementById("thorns");
 
       function makeThorn(x, y, s, len, delay) {
@@ -1352,7 +1386,7 @@
       // ── Build the bloom, outer rings inward ──────────────────────
       const GOLD = 137.508; // golden angle
 
-      // Layer 1: outermost — large, broad, gently reflexed petals
+      // Layer 1: outermost - large, broad, gently reflexed petals
       let n = 6;
       for (let i = 0; i < n; i++) {
         const angle = (i / n) * 360 + (Math.random() - 0.5) * 8;
@@ -1443,7 +1477,7 @@
         );
       }
 
-      // Center & finishing touches — appear after the core (gated)
+      // Center & finishing touches - appear after the core (gated)
       runOnStart(() =>
         setTimeout(() => {
           const center = svgEl("circle");
@@ -1473,7 +1507,7 @@
             fill: "forwards",
           });
 
-          // Scatter dew across the bloom — fresh morning rose
+          // Scatter dew across the bloom - fresh morning rose
           for (let i = 0; i < 34; i++) {
             const a = Math.random() * Math.PI * 2;
             const rad = 22 + Math.random() * 128;
@@ -1595,18 +1629,18 @@
         });
       }
 
-      // Floats + falling petals — begin with the show
+      // Floats + falling petals - begin with the show
       runOnStart(() => {
         spawnFloat();
-        const slow = setInterval(spawnFloat, 700);
+        const slow = setInterval(spawnFloat, 950);
         setTimeout(() => {
           clearInterval(slow);
-          setInterval(spawnFloat, 240);
-          setInterval(spawnFallPetal, 600);
-          for (let i = 0; i < 50; i++) setTimeout(spawnFloat, i * 60);
+          setInterval(spawnFloat, 520);
+          setInterval(spawnFallPetal, 1000);
+          for (let i = 0; i < 24; i++) setTimeout(spawnFloat, i * 90);
         }, 5500);
         setTimeout(() => {
-          for (let i = 0; i < 80; i++) setTimeout(spawnFloat, i * 40);
+          for (let i = 0; i < 36; i++) setTimeout(spawnFloat, i * 70);
         }, 7200);
       });
 
@@ -1653,8 +1687,8 @@
         const h = Math.floor((diff % 86400000) / 3600000);
         const m = Math.floor((diff % 3600000) / 60000);
         el.innerHTML =
-          `Plus que <b>${d}</b> jours <span>·</span> <b>${h}</b> h ` +
-          `<span>·</span> <b>${m}</b> min avant qu'on ne soit unis à jamais, in sha Allah ⏳`;
+          `Plus que <b>${d}</b> j <span>·</span> <b>${h}</b> h ` +
+          `<span>·</span> <b>${m}</b> min avant toi ⏳`;
       }
 
       runOnStart(() =>
@@ -1689,7 +1723,9 @@
         letterEl.setAttribute("aria-hidden", "true");
       }
 
-      document.getElementById("letterBtn").addEventListener("click", openLetter);
+      document
+        .getElementById("letterBtn")
+        .addEventListener("click", openLetter);
       document
         .getElementById("letterClose")
         .addEventListener("click", closeLetter);
@@ -1701,13 +1737,13 @@
       });
 
       // ════════════════════════════════════════════════════════════
-      //  Music — "Happy Birthday" once, then a tender romantic waltz on loop
-      //  (generated live, public-domain melodies — no file, no copyright)
+      //  Music - "Happy Birthday" once, then a tender romantic waltz on loop
+      //  (generated live, public-domain melodies - no file, no copyright)
       // ════════════════════════════════════════════════════════════
       let audioCtx,
         masterGain,
         muted = false;
-      // "Happy Birthday to You" — [frequency Hz, duration seconds]
+      // "Happy Birthday to You" - [frequency Hz, duration seconds]
       // G4 392 · A4 440 · B4 493.88 · C5 523.25 · D5 587.33 · E5 659.25 · F5 698.46 · G5 783.99
       // prettier-ignore
       const SONG = [
@@ -1723,7 +1759,7 @@
         [0, 0.9],
       ];
 
-      // …then a tender romantic waltz, looping forever — [frequency, seconds]
+      // …then a tender romantic waltz, looping forever - [frequency, seconds]
       // prettier-ignore
       const ROMANCE = [
         // a longing rise and a sigh (Am)
@@ -1793,7 +1829,7 @@
       }
 
       // ════════════════════════════════════════════════════════════
-      //  Gift gate — the whole show opens on the first tap
+      //  Gift gate - the whole show opens on the first tap
       // ════════════════════════════════════════════════════════════
       function startShow() {
         if (showStarted) return;
