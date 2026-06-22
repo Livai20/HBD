@@ -1468,16 +1468,27 @@
       );
 
       // ════════════════════════════════════════════════════════════
-      //  Music — a gentle generated music box (no file, no copyright)
+      //  Music — "Happy Birthday" as a gentle music box
+      //  (public-domain melody, generated live — no file, no copyright)
       // ════════════════════════════════════════════════════════════
       let audioCtx,
         masterGain,
         muted = false;
-      const MELODY = [
-        659.25, 783.99, 880.0, 783.99, 659.25, 587.33, 523.25, 587.33, 659.25,
-        783.99, 880.0, 1046.5, 880.0, 783.99, 659.25, 587.33,
+      // "Happy Birthday to You" — [frequency Hz, duration seconds]
+      // G4 392 · A4 440 · B4 493.88 · C5 523.25 · D5 587.33 · E5 659.25 · F5 698.46 · G5 783.99
+      // prettier-ignore
+      const SONG = [
+        // Hap-py birth-day to you
+        [392.0, 0.3], [392.0, 0.16], [440.0, 0.42], [392.0, 0.42], [523.25, 0.42], [493.88, 0.82],
+        // Hap-py birth-day to you
+        [392.0, 0.3], [392.0, 0.16], [440.0, 0.42], [392.0, 0.42], [587.33, 0.42], [523.25, 0.82],
+        // Hap-py birth-day dear Bal-kis-sa
+        [392.0, 0.3], [392.0, 0.16], [783.99, 0.42], [659.25, 0.42], [523.25, 0.42], [493.88, 0.42], [440.0, 0.82],
+        // Hap-py birth-day to you
+        [698.46, 0.3], [698.46, 0.16], [659.25, 0.42], [523.25, 0.42], [587.33, 0.42], [523.25, 0.95],
+        // a breath before the tune repeats
+        [0, 0.9],
       ];
-      const BASS = [130.81, 146.83, 164.81, 196.0];
 
       function playNote(freq, time, dur, gain, type) {
         const o = audioCtx.createOscillator();
@@ -1500,35 +1511,31 @@
         audioCtx = new AC();
         if (audioCtx.resume) audioCtx.resume();
         masterGain = audioCtx.createGain();
-        masterGain.gain.value = muted ? 0 : 0.16;
+        masterGain.gain.value = muted ? 0 : 0.2;
         masterGain.connect(audioCtx.destination);
-        let i = 0;
-        let next = audioCtx.currentTime + 0.15;
-        const step = 0.42;
+        let idx = 0;
+        let next = audioCtx.currentTime + 0.2;
         function schedule() {
-          while (next < audioCtx.currentTime + 1.0) {
-            const f = MELODY[i % MELODY.length];
-            playNote(f, next, 1.4, 0.16, "triangle");
-            if (i % 2 === 0) playNote(f / 2, next, 1.8, 0.05, "sine");
-            if (i % 4 === 0)
-              playNote(
-                BASS[((i / 4) | 0) % BASS.length],
-                next,
-                2.2,
-                0.05,
-                "sine",
-              );
-            i++;
-            next += step;
+          while (next < audioCtx.currentTime + 1.2) {
+            const f = SONG[idx % SONG.length][0];
+            const dur = SONG[idx % SONG.length][1];
+            if (f > 0) {
+              // music-box bell: ring a little past the note's length
+              playNote(f, next, Math.max(dur + 0.35, 0.55), 0.2, "triangle");
+              // soft octave-below warmth under the held notes
+              if (dur >= 0.7) playNote(f / 2, next, dur + 0.6, 0.06, "sine");
+            }
+            next += dur;
+            idx++;
           }
         }
         schedule();
-        setInterval(schedule, 200);
+        setInterval(schedule, 220);
       }
 
       function toggleMute() {
         muted = !muted;
-        if (masterGain) masterGain.gain.value = muted ? 0 : 0.16;
+        if (masterGain) masterGain.gain.value = muted ? 0 : 0.2;
         document.getElementById("mute").textContent = muted ? "🔇" : "🔊";
       }
 
