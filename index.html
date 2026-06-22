@@ -269,13 +269,6 @@
         opacity: 0;
         transform: translateY(20px);
         animation: textRise 1.6s cubic-bezier(0.2, 0.6, 0.3, 1) forwards;
-        /* tight white halo: keeps text crisp over the green stem
-           while letting the stem stay visible through a lighter veil */
-        text-shadow:
-          0 0 3px rgba(255, 250, 246, 0.95),
-          0 1px 1px rgba(255, 250, 246, 0.95),
-          0 0 8px rgba(255, 248, 242, 0.8),
-          0 0 16px rgba(255, 248, 242, 0.5);
       }
 
       .greeting {
@@ -616,7 +609,6 @@
         font-size: clamp(14px, 2.5vw, 18px);
         letter-spacing: 1px;
         color: #8a1838;
-        text-shadow: 0 1px 2px rgba(255, 250, 246, 0.9);
       }
       .envelope:hover .env-svg {
         filter: drop-shadow(0 14px 20px rgba(120, 50, 40, 0.4))
@@ -729,6 +721,29 @@
           opacity: 1;
           transform: translateY(0);
         }
+      }
+      .l-photo {
+        margin: 0 auto 24px;
+        width: min(62%, 220px);
+        text-align: center;
+      }
+      .l-photo img {
+        width: 100%;
+        aspect-ratio: 4 / 5;
+        object-fit: cover;
+        display: block;
+        border-radius: 10px;
+        border: 5px solid #fffaf2;
+        box-shadow:
+          0 12px 26px rgba(80, 30, 45, 0.32),
+          0 0 0 1px rgba(196, 150, 110, 0.55);
+        transform: rotate(-2deg);
+      }
+      .l-photo figcaption {
+        margin-top: 10px;
+        font-family: "Dancing Script", cursive;
+        font-size: clamp(15px, 3.4vw, 19px);
+        color: #8a1838;
       }
       .l-salut {
         font-family: "Parisienne", cursive;
@@ -1122,6 +1137,11 @@
         // 💌 La lettre d'amour (s'ouvre en modale). Modifie librement :
         //    la salutation, autant de paragraphes que tu veux, et la signature.
         letter: {
+          // 🖼️ Photo en haut de la lettre : dépose ton image dans le dossier
+          //    HBD/ et écris son nom ici (ex. "balkissa.jpg"). Mets "" pour
+          //    aucune photo. Si le fichier manque, le cadre se cache tout seul.
+          photo: "balkissa.jpg",
+          photoCaption: "",
           salutation: "Ma Balkissa,",
           paragraphs: [
             "Aujourd'hui c'est ton jour, mon amour 💖.",
@@ -1145,12 +1165,27 @@
       (function buildLetter() {
         const L = CONFIG.letter;
         const body = document.getElementById("letterBody");
-        let html = `<p class="l-salut">${L.salutation}</p>`;
+        let html = "";
+        if (L.photo) {
+          html += `<figure class="l-photo">
+            <img id="lPhoto" src="${L.photo}" alt="" />
+            ${L.photoCaption ? `<figcaption>${L.photoCaption}</figcaption>` : ""}
+          </figure>`;
+        }
+        html += `<p class="l-salut">${L.salutation}</p>`;
         L.paragraphs.forEach((p) => {
           html += `<p class="l-para">${p}</p>`;
         });
         html += `<p class="l-sign">${L.signature} <span class="l-heart">❤</span></p>`;
         body.innerHTML = html;
+        // If the photo file is missing, hide its frame gracefully
+        const photo = document.getElementById("lPhoto");
+        if (photo) {
+          photo.addEventListener("error", () => {
+            const fig = photo.closest(".l-photo");
+            if (fig) fig.style.display = "none";
+          });
+        }
       })();
       // Tab title stays subtle ("Pour toi…") until the surprise is opened.
       // It is revealed in startShow(), after the first tap.
