@@ -372,9 +372,187 @@
           bottom: 3vh;
         }
       }
+
+      /* ── Gift intro overlay ── */
+      #intro {
+        position: fixed;
+        inset: 0;
+        z-index: 50;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        text-align: center;
+        padding: 0 24px;
+        cursor: pointer;
+        background:
+          radial-gradient(
+            ellipse 80% 60% at 50% 42%,
+            rgba(255, 228, 225, 0.92),
+            transparent 70%
+          ),
+          linear-gradient(180deg, #fdf8f4 0%, #f6e6ec 100%);
+        transition:
+          opacity 0.9s ease,
+          visibility 0.9s ease;
+      }
+      #intro.hidden {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+      #intro .gift {
+        font-size: clamp(56px, 17vw, 96px);
+        line-height: 1;
+        filter: drop-shadow(0 10px 22px rgba(176, 58, 91, 0.25));
+        animation: giftPulse 1.8s ease-in-out infinite;
+      }
+      #intro .intro-tap {
+        font-family: "Cinzel", serif;
+        font-weight: 600;
+        font-size: clamp(19px, 5vw, 28px);
+        letter-spacing: 2px;
+        color: #8a1838;
+      }
+      #intro .intro-sub {
+        font-family: "Cormorant Garamond", serif;
+        font-style: italic;
+        font-size: clamp(15px, 3.2vw, 19px);
+        color: #b03a5b;
+        opacity: 0.9;
+      }
+      #intro .intro-hint {
+        margin-top: 4px;
+        font-size: clamp(11px, 2.6vw, 13px);
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: rgba(138, 24, 56, 0.55);
+        animation: hintFade 2s ease-in-out infinite;
+      }
+      @keyframes giftPulse {
+        0%,
+        100% {
+          transform: translateY(0) scale(1);
+        }
+        50% {
+          transform: translateY(-9px) scale(1.06);
+        }
+      }
+      @keyframes hintFade {
+        0%,
+        100% {
+          opacity: 0.35;
+        }
+        50% {
+          opacity: 0.85;
+        }
+      }
+
+      /* ── While locked, hold every animation at its first frame ── */
+      body.locked *,
+      body.locked *::before,
+      body.locked *::after {
+        animation-play-state: paused !important;
+      }
+      /* …except the intro itself, which keeps inviting the tap */
+      #intro,
+      #intro * {
+        animation-play-state: running !important;
+      }
+
+      /* ── Mute toggle ── */
+      #mute {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        z-index: 10;
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background: rgba(176, 58, 91, 0.1);
+        border: 1px solid rgba(176, 58, 91, 0.45);
+        color: #b03a5b;
+        font-size: 18px;
+        cursor: pointer;
+        display: none;
+        place-items: center;
+        transition: background 0.2s;
+      }
+      #mute.show {
+        display: grid;
+      }
+      #mute:hover {
+        background: rgba(176, 58, 91, 0.22);
+      }
+
+      /* ── Falling rose petals ── */
+      .fall-petal {
+        position: absolute;
+        top: -40px;
+        opacity: 0;
+        border-radius: 150% 0 150% 0;
+        box-shadow: 0 1px 3px rgba(120, 10, 30, 0.22);
+        animation: fallDown linear infinite;
+      }
+      @keyframes fallDown {
+        0% {
+          transform: translate(0, 0) rotate(0deg);
+          opacity: 0;
+        }
+        10% {
+          opacity: 0.9;
+        }
+        90% {
+          opacity: 0.9;
+        }
+        100% {
+          transform: translate(var(--drift, 0px), 112vh)
+            rotate(var(--spin, 360deg));
+          opacity: 0;
+        }
+      }
+
+      /* ── Countdown ── */
+      .countdown {
+        font-family: "Cormorant Garamond", serif;
+        font-style: italic;
+        font-size: clamp(13px, 2.3vw, 17px);
+        color: rgba(110, 39, 56, 0.85);
+        letter-spacing: 0.5px;
+        margin-top: 14px;
+        animation-delay: 9.3s;
+      }
+      .countdown b {
+        font-style: normal;
+        font-weight: 600;
+        color: #8a1838;
+      }
+      .countdown span {
+        color: #b07a2e;
+        margin: 0 4px;
+        opacity: 0.7;
+      }
+
+      /* ── Typewriter caret ── */
+      .caret::after {
+        content: "|";
+        margin-left: 2px;
+        color: #b03a5b;
+        animation: caretBlink 0.9s steps(1) infinite;
+      }
+      @keyframes caretBlink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0;
+        }
+      }
     </style>
   </head>
-  <body>
+  <body class="locked">
     <div class="bg-pattern"></div>
     <div class="vignette"></div>
 
@@ -588,10 +766,22 @@
       <div class="message-line personal" id="personal">
         Comme Bilqîs en son temps, tu règnes sur mon cœur.
         <span class="signoff"
-          >In sha Allah, en Décembre 🌚. - Abdourahamane ❤</span
+          >In sha Allah, en Décembre 💍. - Abdourahamane ❤</span
         >
       </div>
+      <div class="message-line countdown" id="countdown"></div>
     </div>
+
+    <div id="intro">
+      <div class="gift">🎁</div>
+      <div class="intro-tap">Un cadeau t'attend</div>
+      <div class="intro-sub">Touchez l'écran pour l'ouvrir…</div>
+      <div class="intro-hint">tap ✦ tap</div>
+    </div>
+
+    <button id="mute" type="button" title="Couper / activer la musique">
+      🔊
+    </button>
 
     <button
       class="replay"
@@ -611,15 +801,24 @@
         title: "My everything 💝",
         personalLine: "Comme Bilqîs en son temps, tu règnes sur mon cœur.",
         signoff: "In sha Allah, en Décembre 🌚. - Abdourahamane ❤",
+        // 📅 Date de vos retrouvailles (modifie-la !) — format AAAA-MM-JJ
+        reunionDate: "2026-12-01",
       };
 
       document.getElementById("greeting").textContent = CONFIG.greeting;
       document.getElementById("name").textContent = CONFIG.name;
       document.getElementById("title").innerHTML =
         `<span>—</span>${CONFIG.title}<span>—</span>`;
-      document.getElementById("personal").innerHTML =
-        `${CONFIG.personalLine}<span class="signoff">${CONFIG.signoff}</span>`;
       document.title = `HBD ${CONFIG.name} · ${CONFIG.title}`;
+      // The personal line is typed out on start (see typewriter below).
+
+      // ── Gate: nothing in the show runs until the gift is opened (tap) ──
+      let showStarted = false;
+      const startCbs = [];
+      function runOnStart(fn) {
+        if (showStarted) fn();
+        else startCbs.push(fn);
+      }
 
       // ════════════════════════════════════════════════════════════
       //  Rose construction
@@ -1047,61 +1246,63 @@
         );
       }
 
-      // Center & finishing touches — appear after the core
-      setTimeout(() => {
-        const center = svgEl("circle");
-        center.setAttribute("cx", cx);
-        center.setAttribute("cy", cy);
-        center.setAttribute("r", "4.5");
-        center.setAttribute("fill", "url(#centerGrad)");
-        center.style.opacity = "0";
-        bloom.appendChild(center);
-        center.animate([{ opacity: 0 }, { opacity: 1 }], {
-          duration: 800,
-          fill: "forwards",
-        });
+      // Center & finishing touches — appear after the core (gated)
+      runOnStart(() =>
+        setTimeout(() => {
+          const center = svgEl("circle");
+          center.setAttribute("cx", cx);
+          center.setAttribute("cy", cy);
+          center.setAttribute("r", "4.5");
+          center.setAttribute("fill", "url(#centerGrad)");
+          center.style.opacity = "0";
+          bloom.appendChild(center);
+          center.animate([{ opacity: 0 }, { opacity: 1 }], {
+            duration: 800,
+            fill: "forwards",
+          });
 
-        // Overall lit highlight on the bloom for a "kissed by light" feel
-        const hl = svgEl("ellipse");
-        hl.setAttribute("cx", cx - 28);
-        hl.setAttribute("cy", cy - 34);
-        hl.setAttribute("rx", "40");
-        hl.setAttribute("ry", "24");
-        hl.setAttribute("fill", "rgba(255, 215, 205, 0.10)");
-        hl.setAttribute("transform", `rotate(-25 ${cx - 28} ${cy - 34})`);
-        hl.style.opacity = "0";
-        bloom.appendChild(hl);
-        hl.animate([{ opacity: 0 }, { opacity: 1 }], {
-          duration: 1600,
-          fill: "forwards",
-        });
+          // Overall lit highlight on the bloom for a "kissed by light" feel
+          const hl = svgEl("ellipse");
+          hl.setAttribute("cx", cx - 28);
+          hl.setAttribute("cy", cy - 34);
+          hl.setAttribute("rx", "40");
+          hl.setAttribute("ry", "24");
+          hl.setAttribute("fill", "rgba(255, 215, 205, 0.10)");
+          hl.setAttribute("transform", `rotate(-25 ${cx - 28} ${cy - 34})`);
+          hl.style.opacity = "0";
+          bloom.appendChild(hl);
+          hl.animate([{ opacity: 0 }, { opacity: 1 }], {
+            duration: 1600,
+            fill: "forwards",
+          });
 
-        // Scatter dew across the bloom — fresh morning rose
-        for (let i = 0; i < 34; i++) {
-          const a = Math.random() * Math.PI * 2;
-          const rad = 22 + Math.random() * 128;
-          const x = cx + Math.cos(a) * rad * 0.95;
-          const y = cy + Math.sin(a) * rad * 0.78 - 6;
-          const r = 1.4 + Math.random() * 4.4;
-          dewDrop(x, y, r, i * 55);
-        }
-        // A few larger feature beads on the petals
-        dewDrop(cx - 90, cy + 30, 7.5, 1500);
-        dewDrop(cx + 80, cy - 50, 6.5, 1650);
-        dewDrop(cx - 24, cy + 64, 7, 1800);
-        dewDrop(cx + 52, cy + 52, 5.5, 1950);
-        dewDrop(cx - 64, cy - 40, 5, 2100);
-        // Dew resting on the leaves
-        dewDrop(306, 595, 5, 2250);
-        dewDrop(196, 484, 4.5, 2400);
-        dewDrop(300, 388, 4, 2550);
-        dewDrop(286, 612, 3, 2650);
-        dewDrop(214, 470, 3.2, 2750);
-        // Dew clinging to the stem
-        dewDrop(247, 360, 3.4, 2850);
-        dewDrop(255, 520, 3, 2950);
-        dewDrop(243, 690, 3.6, 3050);
-      }, 6400);
+          // Scatter dew across the bloom — fresh morning rose
+          for (let i = 0; i < 34; i++) {
+            const a = Math.random() * Math.PI * 2;
+            const rad = 22 + Math.random() * 128;
+            const x = cx + Math.cos(a) * rad * 0.95;
+            const y = cy + Math.sin(a) * rad * 0.78 - 6;
+            const r = 1.4 + Math.random() * 4.4;
+            dewDrop(x, y, r, i * 55);
+          }
+          // A few larger feature beads on the petals
+          dewDrop(cx - 90, cy + 30, 7.5, 1500);
+          dewDrop(cx + 80, cy - 50, 6.5, 1650);
+          dewDrop(cx - 24, cy + 64, 7, 1800);
+          dewDrop(cx + 52, cy + 52, 5.5, 1950);
+          dewDrop(cx - 64, cy - 40, 5, 2100);
+          // Dew resting on the leaves
+          dewDrop(306, 595, 5, 2250);
+          dewDrop(196, 484, 4.5, 2400);
+          dewDrop(300, 388, 4, 2550);
+          dewDrop(286, 612, 3, 2650);
+          dewDrop(214, 470, 3.2, 2750);
+          // Dew clinging to the stem
+          dewDrop(247, 360, 3.4, 2850);
+          dewDrop(255, 520, 3, 2950);
+          dewDrop(243, 690, 3.6, 3050);
+        }, 6400),
+      );
 
       // ════════════════════════════════════════════════════════════
       //  Floating hearts & gold particles
@@ -1158,18 +1359,212 @@
         setTimeout(() => el.remove(), duration * 1000 + 200);
       }
 
-      // Start floats gently from the beginning, intensify when rose blooms
-      setInterval(spawnFloat, 700);
-      setTimeout(() => {
-        setInterval(spawnFloat, 220);
-        // Burst when rose opens
-        for (let i = 0; i < 50; i++) setTimeout(spawnFloat, i * 60);
-      }, 5500);
+      // ── Falling rose petals ──
+      function spawnFallPetal() {
+        const el = document.createElement("div");
+        el.className = "fall-petal";
+        const size = 9 + Math.random() * 12;
+        el.style.width = size + "px";
+        el.style.height = size * 1.25 + "px";
+        el.style.left = Math.random() * 100 + "vw";
+        el.style.background =
+          "radial-gradient(circle at 32% 28%, #ef6178, #a4172d 72%)";
+        const dur = 7 + Math.random() * 7;
+        el.style.animationDuration = dur + "s";
+        el.style.setProperty("--drift", (Math.random() - 0.5) * 220 + "px");
+        el.style.setProperty(
+          "--spin",
+          (Math.random() < 0.5 ? -1 : 1) * (360 + Math.random() * 360) + "deg",
+        );
+        floats.appendChild(el);
+        setTimeout(() => el.remove(), dur * 1000 + 200);
+      }
 
-      // Big burst when text appears
-      setTimeout(() => {
-        for (let i = 0; i < 80; i++) setTimeout(spawnFloat, i * 40);
-      }, 7200);
+      // Helper: is this animation part of the intro overlay?
+      function isIntroAnim(a) {
+        const t = a.effect && a.effect.target;
+        return !!(t && t.closest && t.closest("#intro"));
+      }
+
+      // Hold every already-built animation (petals, thorns, leaves, message)
+      // at its first frame until the gift is opened.
+      if (document.getAnimations) {
+        document.getAnimations().forEach((a) => {
+          if (isIntroAnim(a)) return;
+          try {
+            a.pause();
+            a.currentTime = 0;
+          } catch (e) {}
+        });
+      }
+
+      // Floats + falling petals — begin with the show
+      runOnStart(() => {
+        spawnFloat();
+        const slow = setInterval(spawnFloat, 700);
+        setTimeout(() => {
+          clearInterval(slow);
+          setInterval(spawnFloat, 240);
+          setInterval(spawnFallPetal, 600);
+          for (let i = 0; i < 50; i++) setTimeout(spawnFloat, i * 60);
+        }, 5500);
+        setTimeout(() => {
+          for (let i = 0; i < 80; i++) setTimeout(spawnFloat, i * 40);
+        }, 7200);
+      });
+
+      // ── Typewriter for the personal message ──
+      function typeOut(el, text, speed, done) {
+        let i = 0;
+        (function tick() {
+          el.textContent = text.slice(0, i);
+          if (i++ < text.length) setTimeout(tick, speed);
+          else if (done) done();
+        })();
+      }
+
+      runOnStart(() =>
+        setTimeout(() => {
+          const p = document.getElementById("personal");
+          p.innerHTML = '<span id="ptext" class="caret"></span>';
+          const pt = document.getElementById("ptext");
+          typeOut(pt, CONFIG.personalLine, 45, () => {
+            pt.classList.remove("caret");
+            const sign = document.createElement("span");
+            sign.className = "signoff";
+            sign.innerHTML = CONFIG.signoff;
+            sign.style.opacity = "0";
+            sign.style.transition = "opacity 1.2s ease";
+            p.appendChild(sign);
+            requestAnimationFrame(() => (sign.style.opacity = "1"));
+          });
+        }, 8300),
+      );
+
+      // ── Live countdown to the reunion ──
+      function updateCountdown() {
+        const el = document.getElementById("countdown");
+        if (!el) return;
+        const target = new Date(CONFIG.reunionDate + "T00:00:00");
+        const diff = target - new Date();
+        if (isNaN(diff)) return;
+        if (diff <= 0) {
+          el.innerHTML = "💞 Le grand jour est enfin arrivé…";
+          return;
+        }
+        const d = Math.floor(diff / 86400000);
+        const h = Math.floor((diff % 86400000) / 3600000);
+        const m = Math.floor((diff % 3600000) / 60000);
+        el.innerHTML =
+          `Plus que <b>${d}</b> jours <span>·</span> <b>${h}</b> h ` +
+          `<span>·</span> <b>${m}</b> min avant qu'on ne soit unis à jamais, in sha Allah ⏳`;
+      }
+
+      runOnStart(() =>
+        setTimeout(() => {
+          updateCountdown();
+          setInterval(updateCountdown, 60000);
+        }, 9300),
+      );
+
+      // ════════════════════════════════════════════════════════════
+      //  Music — a gentle generated music box (no file, no copyright)
+      // ════════════════════════════════════════════════════════════
+      let audioCtx,
+        masterGain,
+        muted = false;
+      const MELODY = [
+        659.25, 783.99, 880.0, 783.99, 659.25, 587.33, 523.25, 587.33, 659.25,
+        783.99, 880.0, 1046.5, 880.0, 783.99, 659.25, 587.33,
+      ];
+      const BASS = [130.81, 146.83, 164.81, 196.0];
+
+      function playNote(freq, time, dur, gain, type) {
+        const o = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        o.type = type || "triangle";
+        o.frequency.value = freq;
+        o.connect(g);
+        g.connect(masterGain);
+        g.gain.setValueAtTime(0.0001, time);
+        g.gain.exponentialRampToValueAtTime(gain, time + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001, time + dur);
+        o.start(time);
+        o.stop(time + dur + 0.05);
+      }
+
+      function startMusic() {
+        if (audioCtx) return;
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if (!AC) return;
+        audioCtx = new AC();
+        if (audioCtx.resume) audioCtx.resume();
+        masterGain = audioCtx.createGain();
+        masterGain.gain.value = muted ? 0 : 0.16;
+        masterGain.connect(audioCtx.destination);
+        let i = 0;
+        let next = audioCtx.currentTime + 0.15;
+        const step = 0.42;
+        function schedule() {
+          while (next < audioCtx.currentTime + 1.0) {
+            const f = MELODY[i % MELODY.length];
+            playNote(f, next, 1.4, 0.16, "triangle");
+            if (i % 2 === 0) playNote(f / 2, next, 1.8, 0.05, "sine");
+            if (i % 4 === 0)
+              playNote(
+                BASS[((i / 4) | 0) % BASS.length],
+                next,
+                2.2,
+                0.05,
+                "sine",
+              );
+            i++;
+            next += step;
+          }
+        }
+        schedule();
+        setInterval(schedule, 200);
+      }
+
+      function toggleMute() {
+        muted = !muted;
+        if (masterGain) masterGain.gain.value = muted ? 0 : 0.16;
+        document.getElementById("mute").textContent = muted ? "🔇" : "🔊";
+      }
+
+      // ════════════════════════════════════════════════════════════
+      //  Gift gate — the whole show opens on the first tap
+      // ════════════════════════════════════════════════════════════
+      function startShow() {
+        if (showStarted) return;
+        showStarted = true;
+        document.body.classList.remove("locked");
+        if (document.getAnimations) {
+          document.getAnimations().forEach((a) => {
+            if (isIntroAnim(a)) return;
+            try {
+              a.currentTime = 0;
+              a.play();
+            } catch (e) {}
+          });
+        }
+        document.getElementById("intro").classList.add("hidden");
+        document.getElementById("mute").classList.add("show");
+        startMusic();
+        startCbs.forEach((fn) => fn());
+      }
+
+      const introEl = document.getElementById("intro");
+      introEl.addEventListener("click", startShow);
+      introEl.addEventListener(
+        "touchstart",
+        (e) => {
+          e.preventDefault();
+          startShow();
+        },
+        { passive: false },
+      );
+      document.getElementById("mute").addEventListener("click", toggleMute);
     </script>
   </body>
 </html>
