@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>HBD Balkissa · My everything 💝</title>
+    <title>Pour toi…</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -773,10 +773,10 @@
     </div>
 
     <div id="intro">
-      <div class="gift">🎁</div>
-      <div class="intro-tap">Un cadeau t'attend</div>
-      <div class="intro-sub">Touchez l'écran pour l'ouvrir…</div>
-      <div class="intro-hint">tap ✦ tap</div>
+      <div class="gift">✨</div>
+      <div class="intro-tap">Pour toi</div>
+      <div class="intro-sub">touche l'écran du bout du doigt…</div>
+      <div class="intro-hint">✦ ✦ ✦</div>
     </div>
 
     <button id="mute" type="button" title="Couper / activer la musique">
@@ -809,7 +809,8 @@
       document.getElementById("name").textContent = CONFIG.name;
       document.getElementById("title").innerHTML =
         `<span>—</span>${CONFIG.title}<span>—</span>`;
-      document.title = `HBD ${CONFIG.name} · ${CONFIG.title}`;
+      // Tab title stays subtle ("Pour toi…") until the surprise is opened.
+      // It is revealed in startShow(), after the first tap.
       // The personal line is typed out on start (see typewriter below).
 
       // ── Gate: nothing in the show runs until the gift is opened (tap) ──
@@ -1468,8 +1469,8 @@
       );
 
       // ════════════════════════════════════════════════════════════
-      //  Music — "Happy Birthday" as a gentle music box
-      //  (public-domain melody, generated live — no file, no copyright)
+      //  Music — "Happy Birthday" once, then a tender romantic waltz on loop
+      //  (generated live, public-domain melodies — no file, no copyright)
       // ════════════════════════════════════════════════════════════
       let audioCtx,
         masterGain,
@@ -1488,6 +1489,20 @@
         [698.46, 0.3], [698.46, 0.16], [659.25, 0.42], [523.25, 0.42], [587.33, 0.42], [523.25, 0.95],
         // a breath before the tune repeats
         [0, 0.9],
+      ];
+
+      // …then a tender romantic waltz, looping forever — [frequency, seconds]
+      // prettier-ignore
+      const ROMANCE = [
+        // a longing rise and a sigh (Am)
+        [440.0, 0.5], [523.25, 0.5], [659.25, 0.5], [880.0, 0.95], [783.99, 0.3], [659.25, 0.5], [587.33, 0.9], [523.25, 0.6],
+        // softening (F → G)
+        [440.0, 0.5], [587.33, 0.5], [698.46, 0.5], [659.25, 0.95], [587.33, 0.3], [523.25, 0.5], [493.88, 1.2],
+        // brightening, hopeful (C → G)
+        [392.0, 0.5], [523.25, 0.5], [659.25, 0.5], [783.99, 0.95], [698.46, 0.3], [659.25, 0.5], [587.33, 0.9], [523.25, 0.6],
+        // a gentle descent home (→ Am)
+        [698.46, 0.5], [659.25, 0.5], [587.33, 0.5], [523.25, 0.5], [493.88, 0.5], [440.0, 1.5],
+        [0, 0.8],
       ];
 
       function playNote(freq, time, dur, gain, type) {
@@ -1515,10 +1530,16 @@
         masterGain.connect(audioCtx.destination);
         let idx = 0;
         let next = audioCtx.currentTime + 0.2;
+        // Happy Birthday plays once, then the romance loops forever
+        function noteAt(k) {
+          return k < SONG.length
+            ? SONG[k]
+            : ROMANCE[(k - SONG.length) % ROMANCE.length];
+        }
         function schedule() {
           while (next < audioCtx.currentTime + 1.2) {
-            const f = SONG[idx % SONG.length][0];
-            const dur = SONG[idx % SONG.length][1];
+            const f = noteAt(idx)[0];
+            const dur = noteAt(idx)[1];
             if (f > 0) {
               // music-box bell: ring a little past the note's length
               playNote(f, next, Math.max(dur + 0.35, 0.55), 0.2, "triangle");
@@ -1557,6 +1578,7 @@
         }
         document.getElementById("intro").classList.add("hidden");
         document.getElementById("mute").classList.add("show");
+        document.title = `${CONFIG.name} · ${CONFIG.title}`;
         startMusic();
         startCbs.forEach((fn) => fn());
       }
