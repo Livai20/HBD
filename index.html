@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,300;1,400;1,500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,300;1,400;1,500&family=Dancing+Script:wght@400;500;600;700&family=Parisienne&display=swap"
       rel="stylesheet"
     />
     <style>
@@ -534,55 +534,151 @@
         opacity: 0.7;
       }
 
-      /* ── Final love message ── */
-      .love {
+      /* ── "Read my letter" button (appears at the very end) ── */
+      .letter-btn {
+        pointer-events: auto;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 24px;
         font-family: "Cormorant Garamond", serif;
         font-style: italic;
         font-size: clamp(15px, 2.7vw, 20px);
-        color: rgba(110, 39, 56, 0.92);
-        line-height: 1.6;
-        max-width: 600px;
-        margin: 24px auto 0;
-        animation-delay: 11s;
+        letter-spacing: 0.5px;
+        color: #8a1838;
+        background: rgba(255, 255, 255, 0.55);
+        border: 1px solid rgba(176, 58, 91, 0.4);
+        border-radius: 999px;
+        padding: 11px 28px;
+        cursor: pointer;
+        box-shadow: 0 8px 22px rgba(176, 58, 91, 0.18);
+        -webkit-backdrop-filter: blur(2px);
+        backdrop-filter: blur(2px);
+        opacity: 0;
+        animation: btnFade 1.2s ease forwards;
+        animation-delay: 10.2s;
+        transition:
+          background 0.2s,
+          transform 0.2s,
+          box-shadow 0.2s;
       }
-      .love-final {
-        display: block;
-        margin-top: 14px;
-        font-family: "Cinzel", serif;
-        font-style: normal;
-        font-weight: 600;
-        font-size: clamp(18px, 3.6vw, 28px);
-        letter-spacing: 2px;
-        background: linear-gradient(
-          180deg,
-          #d65b76 0%,
-          #b32a4c 55%,
-          #8a1838 100%
-        );
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
+      .letter-btn:hover {
+        background: rgba(255, 255, 255, 0.85);
+        transform: translateY(-2px);
+        box-shadow: 0 12px 28px rgba(176, 58, 91, 0.28);
       }
-      .love-final .beat {
-        display: inline-block;
-        -webkit-text-fill-color: #d6336c;
+      @keyframes btnFade {
+        to {
+          opacity: 1;
+        }
+      }
+
+      /* ── Handwritten love letter (modal) ── */
+      .letter-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 60;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px 16px;
+        background: rgba(60, 20, 35, 0.45);
+        -webkit-backdrop-filter: blur(6px);
+        backdrop-filter: blur(6px);
+        opacity: 0;
+        visibility: hidden;
+        transition:
+          opacity 0.5s ease,
+          visibility 0.5s ease;
+      }
+      .letter-overlay.open {
+        opacity: 1;
+        visibility: visible;
+      }
+      .letter-card {
+        position: relative;
+        width: min(92vw, 600px);
+        max-height: 86vh;
+        overflow-y: auto;
+        padding: clamp(30px, 6vw, 56px) clamp(24px, 6vw, 56px);
+        border-radius: 6px;
+        color: #5b2b33;
+        background:
+          radial-gradient(
+            120% 80% at 50% 0%,
+            rgba(255, 255, 255, 0.6),
+            transparent 60%
+          ),
+          linear-gradient(180deg, #fffaf2 0%, #fdf3e6 55%, #f8ead6 100%);
+        box-shadow:
+          0 30px 70px rgba(80, 30, 45, 0.4),
+          inset 0 0 60px rgba(196, 150, 110, 0.12);
+        border: 1px solid rgba(196, 150, 110, 0.35);
+        transform: translateY(26px) scale(0.97);
+        transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.3, 1);
+      }
+      .letter-overlay.open .letter-card {
+        transform: translateY(0) scale(1);
+      }
+      .letter-close {
+        position: absolute;
+        top: 10px;
+        right: 12px;
+        width: 38px;
+        height: 38px;
+        border: none;
+        background: rgba(138, 24, 56, 0.08);
+        color: #8a1838;
+        font-size: 26px;
+        line-height: 1;
+        border-radius: 50%;
+        cursor: pointer;
+        display: grid;
+        place-items: center;
+        transition: background 0.2s;
+      }
+      .letter-close:hover {
+        background: rgba(138, 24, 56, 0.18);
+      }
+      .letter-body p {
+        opacity: 0;
+      }
+      .letter-body p.l-reveal {
+        animation: letterRise 0.9s cubic-bezier(0.2, 0.6, 0.3, 1) forwards;
+      }
+      @keyframes letterRise {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .l-salut {
+        font-family: "Parisienne", cursive;
+        font-size: clamp(28px, 7vw, 42px);
+        color: #8a1838;
+        margin-bottom: 18px;
+      }
+      .l-para {
+        font-family: "Dancing Script", cursive;
+        font-weight: 500;
+        font-size: clamp(19px, 4.4vw, 24px);
+        line-height: 1.7;
+        margin-bottom: 14px;
+        color: #5b2b33;
+      }
+      .l-sign {
+        font-family: "Parisienne", cursive;
+        font-size: clamp(24px, 6vw, 34px);
+        color: #8a1838;
+        text-align: right;
+        margin-top: 26px;
+      }
+      .l-heart {
         color: #d6336c;
-        animation: beat 1.25s ease-in-out infinite;
-      }
-      @keyframes beat {
-        0%,
-        100% {
-          transform: scale(1);
-        }
-        15% {
-          transform: scale(1.28);
-        }
-        30% {
-          transform: scale(1);
-        }
-        45% {
-          transform: scale(1.16);
-        }
       }
 
       /* ── Typewriter caret ── */
@@ -821,9 +917,28 @@
         >
       </div>
       <div class="message-line countdown" id="countdown"></div>
-      <div class="message-line love" id="love">
-        <span id="loveText"></span>
-        <span class="love-final">Je t'aime <span class="beat">❤</span></span>
+      <button class="letter-btn" id="letterBtn" type="button">
+        💌 Lis ma lettre
+      </button>
+    </div>
+
+    <!-- Handwritten love letter (modal) -->
+    <div id="letter" class="letter-overlay" aria-hidden="true">
+      <div
+        class="letter-card"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Lettre"
+      >
+        <button
+          class="letter-close"
+          id="letterClose"
+          type="button"
+          title="Fermer"
+        >
+          ×
+        </button>
+        <div class="letter-body" id="letterBody"></div>
       </div>
     </div>
 
@@ -858,16 +973,38 @@
         signoff: "In sha Allah, en Décembre💍. - Your biggest fan❤",
         // 📅 Date de vos retrouvailles (modifie-la !) — format AAAA-MM-JJ
         reunionDate: "2026-12-01",
-        // 💌 Le mot d'amour qui apparaît tout à la fin (modifie-le librement)
-        loveMessage:
-          "Balkissa, mon âme, ma reine. Qu'Allah me garde à tes côtés chaque jour qu'Il nous offrira. Tu es ma paix, ma plus douce prière, et la plus belle chose qui me soit arrivée. Loin des yeux, jamais du cœur — je compte les jours qui me séparent de toi.",
+        // 💌 La lettre d'amour (s'ouvre en modale). Modifie librement :
+        //    la salutation, autant de paragraphes que tu veux, et la signature.
+        letter: {
+          salutation: "Ma Balkissa,",
+          paragraphs: [
+            "Aujourd'hui le monde célèbre le jour où tu es née ; moi, je célèbre le jour où Allah a décidé que mon chemin croiserait le tien. De toutes Ses grâces, tu es la plus belle.",
+            "Je voudrais avoir les mots des poètes pour te dire ce que tu représentes. Mais aucun mot n'est assez grand : tu es ma paix quand tout s'agite, mon sourire quand le jour est gris, et la plus douce de mes prières.",
+            "Loin de toi, je compte les heures ; et chaque heure me rapproche du jour où je pourrai enfin prendre ta main devant Lui et t'appeler mienne, in sha Allah.",
+            "Tu n'es pas seulement la femme que j'aime — tu es mon everything, ma reine, mon avenir, et la plus belle des bénédictions.",
+            "Alors aujourd'hui, je ne te souhaite pas seulement un joyeux anniversaire. Je te souhaite une vie entière à mes côtés, faite de rires, de douaa exaucées, et d'un amour qui ne s'éteint jamais.",
+            "Joyeux anniversaire, mon amour. Qu'Allah te garde, te comble, et t'offre tout ce que ton cœur désire.",
+            "Je t'aime — hier, aujourd'hui, et chaque jour qu'Il nous accordera.",
+          ],
+          signature: "Pour toujours, ton Abdourahamane",
+        },
       };
-
+      
       document.getElementById("greeting").textContent = CONFIG.greeting;
       document.getElementById("name").textContent = CONFIG.name;
       document.getElementById("title").innerHTML =
         `<span>—</span>${CONFIG.title}<span>—</span>`;
-      document.getElementById("loveText").textContent = CONFIG.loveMessage;
+      // Build the handwritten letter from CONFIG
+      (function buildLetter() {
+        const L = CONFIG.letter;
+        const body = document.getElementById("letterBody");
+        let html = `<p class="l-salut">${L.salutation}</p>`;
+        L.paragraphs.forEach((p) => {
+          html += `<p class="l-para">${p}</p>`;
+        });
+        html += `<p class="l-sign">${L.signature} <span class="l-heart">❤</span></p>`;
+        body.innerHTML = html;
+      })();
       // Tab title stays subtle ("Pour toi…") until the surprise is opened.
       // It is revealed in startShow(), after the first tap.
       // The personal line is typed out on start (see typewriter below).
@@ -1527,12 +1664,41 @@
         }, 9300),
       );
 
-      // ── A tender flurry of hearts as the final love message appears ──
-      runOnStart(() =>
-        setTimeout(() => {
-          for (let i = 0; i < 36; i++) setTimeout(spawnFloat, i * 50);
-        }, 11000),
-      );
+      // ── The handwritten love letter: opens as an isolated modal ──
+      const letterEl = document.getElementById("letter");
+      const letterBody = document.getElementById("letterBody");
+
+      function openLetter() {
+        letterEl.classList.add("open");
+        letterEl.setAttribute("aria-hidden", "false");
+        letterEl.querySelector(".letter-card").scrollTop = 0;
+        // Reveal the lines one after another, as if being written
+        letterBody.querySelectorAll("p").forEach((el, i) => {
+          el.classList.remove("l-reveal");
+          // force reflow so the animation can replay on re-open
+          void el.offsetWidth;
+          el.style.animationDelay = 0.2 + i * 0.55 + "s";
+          el.classList.add("l-reveal");
+        });
+        // A tender flurry of hearts to mark the moment
+        for (let i = 0; i < 30; i++) setTimeout(spawnFloat, i * 55);
+      }
+
+      function closeLetter() {
+        letterEl.classList.remove("open");
+        letterEl.setAttribute("aria-hidden", "true");
+      }
+
+      document.getElementById("letterBtn").addEventListener("click", openLetter);
+      document
+        .getElementById("letterClose")
+        .addEventListener("click", closeLetter);
+      letterEl.addEventListener("click", (e) => {
+        if (e.target === letterEl) closeLetter();
+      });
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeLetter();
+      });
 
       // ════════════════════════════════════════════════════════════
       //  Music — "Happy Birthday" once, then a tender romantic waltz on loop
