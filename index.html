@@ -296,37 +296,64 @@ body {
           <stop offset="1" stop-color="#0f2010"/>
         </radialGradient>
 
-        <radialGradient id="petalOuter" cx="50%" cy="20%" r="80%">
-          <stop offset="0" stop-color="#f04860"/>
-          <stop offset="0.4" stop-color="#b51e34"/>
-          <stop offset="0.85" stop-color="#5a0014"/>
-          <stop offset="1" stop-color="#2a0008"/>
+        <!-- Velvet petal gradients: luminous crown, deep dark throat -->
+        <radialGradient id="petalOuter" cx="50%" cy="10%" r="95%">
+          <stop offset="0" stop-color="#ff8a8f"/>
+          <stop offset="0.15" stop-color="#f54a60"/>
+          <stop offset="0.4" stop-color="#cf1f3c"/>
+          <stop offset="0.7" stop-color="#800018"/>
+          <stop offset="0.88" stop-color="#46000f"/>
+          <stop offset="1" stop-color="#1e0006"/>
         </radialGradient>
 
-        <radialGradient id="petalMid" cx="45%" cy="18%" r="70%">
-          <stop offset="0" stop-color="#f55668"/>
-          <stop offset="0.4" stop-color="#c52440"/>
-          <stop offset="0.85" stop-color="#680018"/>
-          <stop offset="1" stop-color="#33000a"/>
+        <radialGradient id="petalMid" cx="47%" cy="9%" r="88%">
+          <stop offset="0" stop-color="#ff9498"/>
+          <stop offset="0.18" stop-color="#f7506a"/>
+          <stop offset="0.45" stop-color="#d72546"/>
+          <stop offset="0.72" stop-color="#8a001e"/>
+          <stop offset="0.9" stop-color="#4e0011"/>
+          <stop offset="1" stop-color="#240007"/>
         </radialGradient>
 
-        <radialGradient id="petalInner" cx="50%" cy="15%" r="65%">
-          <stop offset="0" stop-color="#ff6b7a"/>
-          <stop offset="0.5" stop-color="#d52a48"/>
-          <stop offset="0.9" stop-color="#7a001f"/>
-          <stop offset="1" stop-color="#3d000f"/>
+        <radialGradient id="petalInner" cx="50%" cy="8%" r="82%">
+          <stop offset="0" stop-color="#ffabae"/>
+          <stop offset="0.22" stop-color="#fb5e72"/>
+          <stop offset="0.5" stop-color="#e02a4e"/>
+          <stop offset="0.78" stop-color="#95001f"/>
+          <stop offset="0.92" stop-color="#520014"/>
+          <stop offset="1" stop-color="#2c0009"/>
         </radialGradient>
 
         <radialGradient id="centerGrad">
-          <stop offset="0" stop-color="#2a0008"/>
-          <stop offset="0.7" stop-color="#1a0004"/>
-          <stop offset="1" stop-color="#0a0002"/>
+          <stop offset="0" stop-color="#1c0006"/>
+          <stop offset="0.6" stop-color="#100003"/>
+          <stop offset="1" stop-color="#050001"/>
         </radialGradient>
 
         <radialGradient id="glowGrad">
-          <stop offset="0" stop-color="rgba(247, 200, 100, 0.25)"/>
-          <stop offset="40%" stop-color="rgba(247, 120, 100, 0.08)"/>
-          <stop offset="100%" stop-color="rgba(247, 120, 100, 0)"/>
+          <stop offset="0" stop-color="rgba(255, 210, 170, 0.30)"/>
+          <stop offset="35%" stop-color="rgba(247, 120, 110, 0.10)"/>
+          <stop offset="100%" stop-color="rgba(247, 120, 110, 0)"/>
+        </radialGradient>
+
+        <!-- Per-petal velvety catch-light -->
+        <radialGradient id="sheen" cx="50%" cy="38%" r="60%">
+          <stop offset="0" stop-color="rgba(255, 236, 236, 0.5)"/>
+          <stop offset="0.55" stop-color="rgba(255, 210, 214, 0.10)"/>
+          <stop offset="1" stop-color="rgba(255, 210, 214, 0)"/>
+        </radialGradient>
+
+        <!-- Throat shadow: deepens the cupped base of each petal -->
+        <linearGradient id="throat" x1="0" y1="1" x2="0" y2="0">
+          <stop offset="0" stop-color="rgba(26, 0, 8, 0.55)"/>
+          <stop offset="0.5" stop-color="rgba(26, 0, 8, 0)"/>
+        </linearGradient>
+
+        <!-- Dew drop -->
+        <radialGradient id="dew" cx="40%" cy="35%" r="65%">
+          <stop offset="0" stop-color="rgba(255, 255, 255, 0.15)"/>
+          <stop offset="0.6" stop-color="rgba(180, 40, 60, 0.10)"/>
+          <stop offset="1" stop-color="rgba(40, 0, 10, 0.35)"/>
         </radialGradient>
 
         <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
@@ -436,35 +463,84 @@ const cx = 250, cy = 240;
 
 function svgEl(name) { return document.createElementNS(SVG_NS, name); }
 
-// Asymmetric teardrop petal path. Base at (0,0), tip at (0,-h)
-function petalPath(w, h, asym = 0) {
-  const lw = w * (1 + asym * 0.1);
-  const rw = w * (1 - asym * 0.1);
+// Rose-petal path. Base at (0,0), tip at (0,-h).
+function petalPath(w, h, asym = 0, pointed = false) {
+  const lw = w * (1 + asym * 0.09);
+  const rw = w * (1 - asym * 0.09);
+  if (pointed) {
+    // Furled inner petal — narrow, gently pointed, deeply cupped
+    return `M 0,0
+      C ${-lw * 0.40},${-h * 0.04} ${-lw * 0.96},${-h * 0.40} ${-lw * 0.46},${-h * 0.80}
+      C ${-lw * 0.30},${-h * 0.95} ${-lw * 0.08},${-h * 1.0} 0,${-h}
+      C ${rw * 0.08},${-h * 1.0} ${rw * 0.30},${-h * 0.95} ${rw * 0.46},${-h * 0.80}
+      C ${rw * 0.96},${-h * 0.40} ${rw * 0.40},${-h * 0.04} 0,0 Z`;
+  }
+  // Broad outer petal — rounded, with a soft heart-notch at the crown
   return `M 0,0
-    C ${-lw * 0.45},${-h * 0.08} ${-lw * 1.05},${-h * 0.4} ${-lw * 0.58},${-h * 0.82}
-    C ${-lw * 0.32},${-h * 1.02} ${rw * 0.28},${-h * 1.02} ${rw * 0.55},${-h * 0.82}
-    C ${rw * 1.0},${-h * 0.4} ${rw * 0.45},${-h * 0.08} 0,0 Z`;
+    C ${-lw * 0.52},${-h * 0.05} ${-lw * 1.04},${-h * 0.34} ${-lw * 0.74},${-h * 0.66}
+    C ${-lw * 0.62},${-h * 0.84} ${-lw * 0.40},${-h * 0.99} ${-lw * 0.20},${-h * 0.96}
+    C ${-lw * 0.09},${-h * 0.945} ${-lw * 0.05},${-h * 0.90} 0,${-h * 0.905}
+    C ${rw * 0.05},${-h * 0.90} ${rw * 0.09},${-h * 0.945} ${rw * 0.20},${-h * 0.96}
+    C ${rw * 0.40},${-h * 0.99} ${rw * 0.62},${-h * 0.84} ${rw * 0.74},${-h * 0.66}
+    C ${rw * 1.04},${-h * 0.34} ${rw * 0.52},${-h * 0.05} 0,0 Z`;
 }
 
-function makePetal(angle, w, h, fillId, delay, opacity = 0.96) {
+function makePetal(angle, w, h, fillId, delay, opts = {}) {
+  const { opacity = 0.96, pointed = false, baseR = 0, tilt = 0, sheen = true } = opts;
+
   // Outer wrapper: positions petal at rose center, rotated to angle
   const wrap = svgEl('g');
   wrap.setAttribute('transform', `translate(${cx},${cy}) rotate(${angle})`);
 
-  // Inner wrapper: animates scale from petal base
+  // Animated wrapper: scales the petal open from its base
   const anim = svgEl('g');
   anim.setAttribute('class', 'petal');
 
-  const asym = (Math.random() - 0.5) * 1.2;
-  const path = svgEl('path');
-  path.setAttribute('d', petalPath(w, h, asym));
-  path.setAttribute('fill', `url(#${fillId})`);
-  path.setAttribute('stroke', '#1a0004');
-  path.setAttribute('stroke-width', '0.6');
-  path.setAttribute('stroke-opacity', '0.4');
-  path.setAttribute('opacity', opacity);
+  // Local wrapper: offsets the base outward and adds a swirl tilt
+  const local = svgEl('g');
+  local.setAttribute('transform', `translate(0,${-baseR}) rotate(${tilt})`);
 
-  anim.appendChild(path);
+  const asym = (Math.random() - 0.5) * 1.3;
+  const d = petalPath(w, h, asym, pointed);
+
+  // Main velvet body
+  const path = svgEl('path');
+  path.setAttribute('d', d);
+  path.setAttribute('fill', `url(#${fillId})`);
+  path.setAttribute('stroke', '#2a0008');
+  path.setAttribute('stroke-width', '0.5');
+  path.setAttribute('stroke-opacity', '0.35');
+  path.setAttribute('opacity', opacity);
+  local.appendChild(path);
+
+  // Throat shadow — deepens the cupped base (same silhouette, dark fades to clear)
+  const shade = svgEl('path');
+  shade.setAttribute('d', d);
+  shade.setAttribute('fill', 'url(#throat)');
+  local.appendChild(shade);
+
+  // Soft central fold
+  const crease = svgEl('path');
+  crease.setAttribute('d', `M 0,${-h * 0.08} Q ${asym * 5},${-h * 0.5} 0,${-h * 0.86}`);
+  crease.setAttribute('fill', 'none');
+  crease.setAttribute('stroke', '#3d000c');
+  crease.setAttribute('stroke-width', Math.max(0.6, w * 0.02));
+  crease.setAttribute('stroke-opacity', '0.18');
+  crease.setAttribute('stroke-linecap', 'round');
+  local.appendChild(crease);
+
+  // Velvety catch-light near the crown
+  if (sheen) {
+    const hl = svgEl('ellipse');
+    hl.setAttribute('cx', (Math.random() - 0.5) * w * 0.2);
+    hl.setAttribute('cy', -h * 0.5);
+    hl.setAttribute('rx', w * 0.34);
+    hl.setAttribute('ry', h * 0.26);
+    hl.setAttribute('fill', 'url(#sheen)');
+    local.appendChild(hl);
+  }
+
+  anim.appendChild(local);
   wrap.appendChild(anim);
   bloom.appendChild(wrap);
 
@@ -472,7 +548,7 @@ function makePetal(angle, w, h, fillId, delay, opacity = 0.96) {
   anim.animate(
     [
       { transform: 'scale(0)', opacity: 0 },
-      { transform: 'scale(1.05)', opacity: 1, offset: 0.85 },
+      { transform: 'scale(1.06)', opacity: 1, offset: 0.85 },
       { transform: 'scale(1)', opacity: 1 }
     ],
     {
@@ -484,82 +560,110 @@ function makePetal(angle, w, h, fillId, delay, opacity = 0.96) {
   );
 }
 
-// Layer 1: outermost petals (largest, fully open, slightly curling back)
-const L1 = 9;
-for (let i = 0; i < L1; i++) {
-  const angle = (i / L1) * 360 + (Math.random() - 0.5) * 6;
-  const w = 62 + Math.random() * 8;
-  const h = 118 + Math.random() * 10;
-  makePetal(angle, w, h, 'petalOuter', 3.3 + (i / L1) * 0.7, 0.92);
+// Dew drop — a bead of water for that fresh, magnificent touch
+function dewDrop(x, y, r) {
+  const g = svgEl('g');
+  g.style.opacity = '0';
+
+  const body = svgEl('circle');
+  body.setAttribute('cx', x); body.setAttribute('cy', y); body.setAttribute('r', r);
+  body.setAttribute('fill', 'url(#dew)');
+  body.setAttribute('stroke', 'rgba(255,255,255,0.25)');
+  body.setAttribute('stroke-width', '0.5');
+
+  const lo = svgEl('ellipse');
+  lo.setAttribute('cx', x); lo.setAttribute('cy', y + r * 0.45);
+  lo.setAttribute('rx', r * 0.5); lo.setAttribute('ry', r * 0.28);
+  lo.setAttribute('fill', 'rgba(255,180,190,0.5)');
+
+  const hi = svgEl('circle');
+  hi.setAttribute('cx', x - r * 0.32); hi.setAttribute('cy', y - r * 0.36);
+  hi.setAttribute('r', r * 0.26);
+  hi.setAttribute('fill', 'rgba(255,255,255,0.92)');
+
+  g.appendChild(body); g.appendChild(lo); g.appendChild(hi);
+  bloom.appendChild(g);
+  g.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 1200, fill: 'forwards' });
 }
 
-// Layer 2: second outer ring, offset
-const L2 = 9;
-for (let i = 0; i < L2; i++) {
-  const angle = (i / L2) * 360 + 20 + (Math.random() - 0.5) * 5;
-  const w = 52 + Math.random() * 7;
-  const h = 100 + Math.random() * 9;
-  makePetal(angle, w, h, 'petalOuter', 3.9 + (i / L2) * 0.6, 0.95);
+// ── Build the bloom, outer rings inward ──────────────────────
+const GOLD = 137.508; // golden angle
+
+// Layer 1: outermost, broad, gently open
+let n = 10;
+for (let i = 0; i < n; i++) {
+  const angle = (i / n) * 360 + (Math.random() - 0.5) * 7;
+  makePetal(angle, 64 + Math.random() * 9, 124 + Math.random() * 12, 'petalOuter',
+    3.2 + (i / n) * 0.8, { opacity: 0.93, baseR: 20 });
 }
 
-// Layer 3: middle petals
-const L3 = 8;
-for (let i = 0; i < L3; i++) {
-  const angle = (i / L3) * 360 + 8 + (Math.random() - 0.5) * 5;
-  const w = 42 + Math.random() * 6;
-  const h = 82 + Math.random() * 8;
-  makePetal(angle, w, h, 'petalMid', 4.5 + (i / L3) * 0.55, 0.97);
+// Layer 2: second ring, offset
+n = 10;
+for (let i = 0; i < n; i++) {
+  const angle = (i / n) * 360 + 18 + (Math.random() - 0.5) * 6;
+  makePetal(angle, 54 + Math.random() * 8, 107 + Math.random() * 10, 'petalOuter',
+    3.8 + (i / n) * 0.7, { opacity: 0.95, baseR: 15 });
+}
+
+// Layer 3: middle
+n = 9;
+for (let i = 0; i < n; i++) {
+  const angle = (i / n) * 360 + 9 + (Math.random() - 0.5) * 6;
+  makePetal(angle, 45 + Math.random() * 7, 89 + Math.random() * 9, 'petalMid',
+    4.4 + (i / n) * 0.6, { opacity: 0.96, baseR: 11 });
 }
 
 // Layer 4: inner-middle
-const L4 = 7;
-for (let i = 0; i < L4; i++) {
-  const angle = (i / L4) * 360 + 22 + (Math.random() - 0.5) * 4;
-  const w = 32 + Math.random() * 5;
-  const h = 62 + Math.random() * 6;
-  makePetal(angle, w, h, 'petalMid', 5.0 + (i / L4) * 0.5);
+n = 8;
+for (let i = 0; i < n; i++) {
+  const angle = (i / n) * 360 + 24 + (Math.random() - 0.5) * 5;
+  makePetal(angle, 35 + Math.random() * 6, 68 + Math.random() * 8, 'petalMid',
+    4.9 + (i / n) * 0.55, { opacity: 0.97, baseR: 8 });
 }
 
-// Layer 5: inner petals
-const L5 = 6;
-for (let i = 0; i < L5; i++) {
-  const angle = (i / L5) * 360 + (Math.random() - 0.5) * 4;
-  const w = 22 + Math.random() * 4;
-  const h = 44 + Math.random() * 5;
-  makePetal(angle, w, h, 'petalInner', 5.5 + (i / L5) * 0.4);
+// Layer 5: inner, beginning to furl
+n = 7;
+for (let i = 0; i < n; i++) {
+  const angle = (i / n) * 360 + 12 + (Math.random() - 0.5) * 5;
+  makePetal(angle, 27 + Math.random() * 5, 52 + Math.random() * 6, 'petalInner',
+    5.3 + (i / n) * 0.5, { opacity: 0.98, baseR: 6, pointed: true });
 }
 
-// Layer 6: core (tightest, curled)
-const L6 = 5;
-for (let i = 0; i < L6; i++) {
-  const angle = (i / L6) * 360 + 30 + (Math.random() - 0.5) * 3;
-  const w = 14 + Math.random() * 3;
-  const h = 28 + Math.random() * 4;
-  makePetal(angle, w, h, 'petalInner', 5.9 + (i / L6) * 0.3);
+// Core: a tight golden-angle spiral of furled petals
+n = 9;
+for (let i = 0; i < n; i++) {
+  const angle = i * GOLD;
+  const f = i / n;
+  makePetal(angle, 20 - f * 9 + Math.random() * 2, 40 - f * 18 + Math.random() * 3, 'petalInner',
+    5.7 + i * 0.05, { opacity: 1, pointed: true, baseR: 2 + i * 1.2, tilt: 16, sheen: false });
 }
 
-// Center dark spot — appears after core
+// Center & finishing touches — appear after the core
 setTimeout(() => {
   const center = svgEl('circle');
   center.setAttribute('cx', cx);
   center.setAttribute('cy', cy);
-  center.setAttribute('r', '6');
+  center.setAttribute('r', '4.5');
   center.setAttribute('fill', 'url(#centerGrad)');
   center.style.opacity = '0';
   bloom.appendChild(center);
   center.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 800, fill: 'forwards' });
 
-  // Soft highlight on the bloom for a "lit" feel
+  // Overall lit highlight on the bloom for a "kissed by light" feel
   const hl = svgEl('ellipse');
-  hl.setAttribute('cx', cx - 22);
-  hl.setAttribute('cy', cy - 28);
-  hl.setAttribute('rx', '18');
-  hl.setAttribute('ry', '10');
-  hl.setAttribute('fill', 'rgba(255, 210, 200, 0.18)');
-  hl.setAttribute('transform', `rotate(-25 ${cx - 22} ${cy - 28})`);
+  hl.setAttribute('cx', cx - 28);
+  hl.setAttribute('cy', cy - 34);
+  hl.setAttribute('rx', '40');
+  hl.setAttribute('ry', '24');
+  hl.setAttribute('fill', 'rgba(255, 215, 205, 0.10)');
+  hl.setAttribute('transform', `rotate(-25 ${cx - 28} ${cy - 34})`);
   hl.style.opacity = '0';
   bloom.appendChild(hl);
-  hl.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 1500, fill: 'forwards' });
+  hl.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 1600, fill: 'forwards' });
+
+  // Dew drops resting on the petals
+  dewDrop(cx - 96, cy + 26, 7);
+  dewDrop(cx + 74, cy - 58, 5);
 }, 6400);
 
 // ════════════════════════════════════════════════════════════
