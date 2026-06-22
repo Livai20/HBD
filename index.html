@@ -45,6 +45,7 @@
         font-family: "Cormorant Garamond", serif;
         color: #6e2738;
         min-height: 100vh;
+        min-height: 100dvh;
         position: relative;
         user-select: none;
         -webkit-tap-highlight-color: transparent;
@@ -131,6 +132,7 @@
         position: relative;
         width: 100vw;
         height: 100vh;
+        height: 100dvh; /* dvh: avoids the mobile URL-bar cutting content */
         display: flex;
         align-items: flex-end;
         justify-content: center;
@@ -141,6 +143,7 @@
         position: relative;
         width: min(95vw, 520px);
         height: 100vh;
+        height: 100dvh;
         pointer-events: none;
       }
 
@@ -364,8 +367,8 @@
         top: 20px;
         right: 20px;
         z-index: 10;
-        width: 42px;
-        height: 42px;
+        width: 44px;
+        height: 44px;
         border-radius: 50%;
         background: rgba(176, 58, 91, 0.1);
         border: 1px solid rgba(176, 58, 91, 0.45);
@@ -385,12 +388,42 @@
         transform: rotate(45deg);
       }
 
+      /* Short screens: tighten the message stack so it always fits */
       @media (max-height: 700px) {
         .name {
-          font-size: clamp(32px, 7vw, 60px);
+          font-size: clamp(30px, 7vw, 56px);
         }
         .message {
           bottom: 3vh;
+        }
+        .greeting {
+          margin-bottom: 6px;
+        }
+        .title-line {
+          margin-bottom: 10px;
+        }
+        .personal {
+          font-size: clamp(13px, 2.3vw, 16px);
+        }
+        .envelope {
+          margin-top: 14px;
+        }
+        .env-svg {
+          width: clamp(64px, 14vw, 88px);
+        }
+      }
+
+      /* Narrow phones: keep the name and title on screen */
+      @media (max-width: 360px) {
+        .name {
+          font-size: 38px;
+          letter-spacing: 3px;
+        }
+        .message {
+          padding: 0 14px;
+        }
+        .title-line span {
+          margin: 0 8px;
         }
       }
 
@@ -488,8 +521,8 @@
         top: 20px;
         left: 20px;
         z-index: 10;
-        width: 42px;
-        height: 42px;
+        width: 44px;
+        height: 44px;
         border-radius: 50%;
         background: rgba(176, 58, 91, 0.1);
         border: 1px solid rgba(176, 58, 91, 0.45);
@@ -655,6 +688,7 @@
         position: relative;
         width: min(92vw, 600px);
         max-height: 86vh;
+        max-height: 86dvh;
         overflow-y: auto;
         /* keep scrolling, but hide the scrollbar */
         scrollbar-width: none; /* Firefox */
@@ -689,8 +723,8 @@
         position: absolute;
         top: 10px;
         right: 12px;
-        width: 38px;
-        height: 38px;
+        width: 44px;
+        height: 44px;
         border: none;
         background: rgba(138, 24, 56, 0.08);
         color: #8a1838;
@@ -730,7 +764,8 @@
       .l-photo img {
         width: 100%;
         height: auto; /* respect the photo's real proportions — no crop */
-        max-height: 56vh;
+        max-height: 50vh;
+        max-height: 50dvh;
         object-fit: contain;
         display: block;
         border-radius: 10px;
@@ -1117,6 +1152,7 @@
 
     <button
       class="replay"
+      type="button"
       onclick="location.reload()"
       title="Rejouer l'animation"
     >
