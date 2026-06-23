@@ -262,8 +262,8 @@
         pointer-events: none;
         background: radial-gradient(
           ellipse 58% 54% at 50% 58%,
-          rgba(253, 246, 242, 0.5) 0%,
-          rgba(253, 246, 242, 0.3) 46%,
+          rgba(253, 246, 242, 0.62) 0%,
+          rgba(253, 246, 242, 0.42) 46%,
           rgba(253, 246, 242, 0) 74%
         );
       }
@@ -278,7 +278,7 @@
         font-family: "Cormorant Garamond", serif;
         font-style: italic;
         font-size: clamp(13px, 2.3vw, 17px);
-        color: #b03a5b;
+        color: #8a1838;
         letter-spacing: clamp(3px, 0.6vw, 6px);
         text-transform: uppercase;
         margin-bottom: 6px;
@@ -290,7 +290,7 @@
         font-style: italic;
         font-size: clamp(13px, 2.2vw, 16px);
         letter-spacing: clamp(1px, 0.4vw, 3px);
-        color: #b07a2e;
+        color: #946012;
         margin-bottom: 10px;
         animation-delay: 7s;
       }
@@ -340,14 +340,14 @@
         font-style: italic;
         font-weight: 400;
         font-size: clamp(17px, 3.2vw, 24px);
-        color: #7a3142;
+        color: #631a30;
         letter-spacing: clamp(2px, 0.5vw, 4px);
         margin-bottom: 16px;
         animation-delay: 7.8s;
       }
 
       .title-line span {
-        color: #b07a2e;
+        color: #946012;
         margin: 0 12px;
         opacity: 0.8;
       }
@@ -356,7 +356,7 @@
         font-family: "Cormorant Garamond", serif;
         font-style: italic;
         font-size: clamp(14px, 2.4vw, 18px);
-        color: rgba(110, 39, 56, 0.9);
+        color: rgba(84, 18, 38, 0.9);
         line-height: 1.55;
         max-width: 580px;
         margin: 0 auto;
@@ -366,7 +366,7 @@
       .personal .signoff {
         display: block;
         margin-top: 8px;
-        color: rgba(110, 39, 56, 0.82);
+        color: rgba(84, 18, 38, 0.95);
         font-size: 0.9em;
       }
 
@@ -588,7 +588,7 @@
         font-family: "Cormorant Garamond", serif;
         font-style: italic;
         font-size: clamp(13px, 2.3vw, 17px);
-        color: rgba(110, 39, 56, 0.95);
+        color: rgba(84, 18, 38, 0.95);
         letter-spacing: 0.5px;
         margin-top: 12px;
         animation-delay: 9.3s;
@@ -599,7 +599,7 @@
         color: #8a1838;
       }
       .countdown span {
-        color: #b07a2e;
+        color: #946012;
         margin: 0 4px;
         opacity: 0.7;
       }
@@ -1075,9 +1075,6 @@
       </div>
       <div class="message-line personal" id="personal">
         Comme Bilqîs en son temps, tu règnes sur mon cœur.
-        <span class="signoff"
-          >In sha Allah, en Décembre 💍. - Your biggest fan❤</span
-        >
       </div>
       <div class="message-line countdown" id="countdown"></div>
       <button
@@ -1886,13 +1883,6 @@
           const pt = document.getElementById("ptext");
           typeOut(pt, CONFIG.personalLine, 45, () => {
             pt.classList.remove("caret");
-            const sign = document.createElement("span");
-            sign.className = "signoff";
-            sign.innerHTML = CONFIG.signoff;
-            sign.style.opacity = "0";
-            sign.style.transition = "opacity 1.2s ease";
-            p.appendChild(sign);
-            requestAnimationFrame(() => (sign.style.opacity = "1"));
           });
         }, 8300),
       );
