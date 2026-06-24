@@ -153,13 +153,14 @@
         position: absolute;
         bottom: 0;
         overflow: visible;
-        transform: scale(1.28);
+        /* lifted so the bloom clears the greeting + date below it */
+        transform: translateY(-7vh) scale(1.28);
         transform-origin: 50% 100%;
       }
 
       @media (max-height: 700px) {
         .rose-svg {
-          transform: scale(1.12);
+          transform: translateY(-5vh) scale(1.12);
         }
       }
 
@@ -254,17 +255,18 @@
         content: "";
         position: absolute;
         left: 50%;
-        top: -12%;
+        top: -22%;
         transform: translateX(-50%);
-        width: 150%;
-        height: 138%;
+        width: 152%;
+        height: 168%;
         z-index: -1;
         pointer-events: none;
         background: radial-gradient(
-          ellipse 58% 54% at 50% 58%,
-          rgba(253, 246, 242, 0.62) 0%,
-          rgba(253, 246, 242, 0.42) 46%,
-          rgba(253, 246, 242, 0) 74%
+          ellipse 60% 60% at 50% 50%,
+          rgba(248, 238, 236, 0.94) 0%,
+          rgba(248, 238, 236, 0.88) 38%,
+          rgba(248, 238, 236, 0.45) 64%,
+          rgba(248, 238, 236, 0) 82%
         );
       }
 
@@ -440,6 +442,56 @@
         }
         .title-line span {
           margin: 0 8px;
+        }
+      }
+
+      /* Wide screens: let the love note + countdown drift to the bottom-right,
+         like a handwritten signature, leaving the centre to the rose & name */
+      @media (min-width: 980px) and (min-height: 560px) {
+        .aside-note {
+          position: fixed;
+          right: clamp(24px, 5vw, 84px);
+          /* shared vertical centre line with the letter (see .envelope) */
+          bottom: clamp(70px, 13vh, 150px);
+          transform: translateY(50%);
+          left: auto;
+          width: min(320px, 30vw);
+          text-align: right;
+          z-index: 4;
+          pointer-events: none;
+        }
+        .aside-note .personal {
+          margin: 0 0 0 auto;
+          max-width: none;
+          font-size: clamp(15px, 1.3vw, 19px);
+        }
+        .aside-note .countdown {
+          margin-top: 10px;
+        }
+        /* faint gold hairline above the note, like a signature underline */
+        .aside-note::before {
+          content: "";
+          display: block;
+          width: 54px;
+          height: 1px;
+          margin: 0 0 12px auto;
+          background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(148, 96, 18, 0.6)
+          );
+          opacity: 0;
+          animation: fadeIn 1.2s ease forwards 8.3s;
+        }
+        /* the letter sits in the bottom-left corner, mirroring the note —
+           freeing the centre stack so the top lines settle lower */
+        .envelope {
+          position: fixed;
+          left: clamp(24px, 5vw, 84px);
+          /* same centre line as the note → the two corners align vertically */
+          bottom: clamp(70px, 13vh, 150px);
+          transform: translateY(50%);
+          z-index: 4;
         }
       }
 
@@ -1073,10 +1125,12 @@
       <div class="message-line title-line" id="title">
         <span>-</span>Reine de Saba<span>-</span>
       </div>
-      <div class="message-line personal" id="personal">
-        Comme Bilqîs en son temps, tu règnes sur mon cœur.
+      <div class="aside-note">
+        <div class="message-line personal" id="personal">
+          Comme Bilqîs en son temps, tu règnes sur mon cœur.
+        </div>
+        <div class="message-line countdown" id="countdown"></div>
       </div>
-      <div class="message-line countdown" id="countdown"></div>
       <button
         class="envelope"
         id="letterBtn"
